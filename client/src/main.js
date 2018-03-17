@@ -4,8 +4,22 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import materialize from 'materialize-css'
+import * as VueGoogleMaps from 'vue2-google-maps'
+
+import Api from '../config/api'
 
 import 'materialize-css/dist/css/materialize.css'
+import 'material-icons/material.css'
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: Api.googleMaps,
+    libraries: 'places', // This is required if you use the Autocomplete plugin
+    // OR: libraries: 'places,drawing'
+    // OR: libraries: 'places,drawing,visualization'
+    // (as you require)
+  }
+})
 
 Vue.config.productionTip = false
 
