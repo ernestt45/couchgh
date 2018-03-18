@@ -10,6 +10,10 @@ const Trips = require('./routes/trips')
 const User = require('./routes/user')
 
 app.use(bodyParser.json())
+app.use("/", (req, res, next)=>{
+    res.header("Access-Control-Allow-Origin", "*");
+    next()
+});
 
 app.use(function (err, req, res, next) {
     console.error(err.stack)

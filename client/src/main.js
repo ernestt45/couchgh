@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import resource from 'vue-resource'
 import materialize from 'materialize-css'
 import * as VueGoogleMaps from 'vue2-google-maps'
 
@@ -20,8 +21,11 @@ Vue.use(VueGoogleMaps, {
     // (as you require)
   }
 })
+Vue.use(resource)
 
 Vue.config.productionTip = false
+
+export var bus = new Vue()
 
 /* eslint-disable no-new */
 new Vue({

@@ -10,10 +10,47 @@ mongoose.connect('mongodb://localhost:27017/chochgh')
 const db = mongoose.connection
 
 db.on('error',(err)=>{
-    console.log(err)
+    console.log('Unccessfull Connection to Mongo')
 })
 db.once('open',()=>{
     console.log('Connected to Mongo successfully')
+})
+
+router.get('/:type/:value/exist', (req, res) => {
+    console.log(req.params.type)
+    switch (req.params.type) {
+        case 'username':
+            User.findOne({ username: req.params.value }, (err, data) => {
+                if (err) {
+                    throw err
+                }
+                console.log(data)
+                if (data) {
+                    res.json({
+                        isExist: true
+                    })
+                } else {
+                    res.json({
+                        isExist: false
+                    })
+                }
+            })
+            break;
+
+        case 'email':
+            User.findOne({ 'email': req.params.value }, (err, data) => {
+                if (data) {
+                    res.json({
+                        isExist: true
+                    })
+                }
+            })
+            break;
+
+        default:
+            res.send('Wrong parameters sent')
+            break;
+    }
 })
 
 router.get('/', (req, res) => {
@@ -48,6 +85,8 @@ router.post('/register', (req, res)=>{
         } 
     })
 })
+
+
 
 module.exports = router
 
