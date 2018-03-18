@@ -20,7 +20,6 @@ db.once('open',()=>{
 })
 
 router.post('/register', (req, res) => {
-    console.log(req.body)
     User.findOne({ username: req.body.username }, (err, data) => {
         if (data) {
             res.json({
@@ -46,6 +45,16 @@ router.post('/register', (req, res) => {
                 }
             })
         }
+    })
+})
+
+
+router.get('/verify/:value', (req, res)=>{
+    User.updateOne({ _id: req.params.value }, {status: 'activated'},(err, doc) => {
+        if (!doc || err) {
+            res.json('Hello funny guy')
+        }
+        res.redirect('http://localhost:8080/login')
     })
 })
 
@@ -83,8 +92,7 @@ router.get('/:type/:value/exist', (req, res) => {
                     })
                 }
             })
-            break;
-
+            break
         default:
             res.send('Wrong parameters sent')
             break;
@@ -109,7 +117,7 @@ var registerUser = function(req, res){
 
         if (err) res.send(err)
         
-        sendMail(req,res)
+        sendMail(req,res, data._id)
 
         res.send(data)
     })
@@ -117,7 +125,7 @@ var registerUser = function(req, res){
     
 }
 
-var sendMail = function(req, res){
+var sendMail = function(req, res, userId){
 
     var nodemailer = require('nodemailer')
 
@@ -138,17 +146,40 @@ var sendMail = function(req, res){
     var mailOptions = {
         from: 'no-reply@chochgh.com',
         to: req.body.email,
-        subject: 'Sending Email ChochGh',
+        subject: 'Account Activation',
+
+        //try to change the verification address pointing to server
         html: 
-        `<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ChochGh Verification Mail</title>
+        `
+       <html lang="en" style="-webkit-box-sizing: border-box;box-sizing: border-box;font-family: &quot;Roboto&quot;, sans-serif;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;line-height: 1.5;font-weight: normal;color: rgba(0,0,0,0.87);">
+<head style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    <meta charset="UTF-8" style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    <title style="-webkit-box-sizing: inherit;box-sizing: inherit;">ChochGh Verification Mail</title>
 </head>
-<body>
-    <h1>Thank you for registering to ChochGh trips and tours....</h1>
+<style style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+    body{
+        background: #ddd;
+    }
+</style>
+<body style="-webkit-box-sizing: inherit;box-sizing: inherit;margin: 0;background: #ddd;">
+    <div class="container center" style="-webkit-box-sizing: inherit;box-sizing: inherit;text-align: center;margin: 0 auto;max-width: 1280px;width: 90%;">
+        <div class="card" style="-webkit-box-sizing: inherit;box-sizing: inherit;-webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);position: relative;margin: .5rem 0 1rem 0;background-color: #fff;-webkit-transition: -webkit-box-shadow .25s;transition: box-shadow .25s, -webkit-box-shadow .25s;border-radius: 2px;">
+            <h3 class="card-title teal-text" style="-webkit-box-sizing: inherit;box-sizing: inherit;font-weight: 300;line-height: 110%;font-size: 24px;margin: 1.46rem 0 1.168rem 0;color: #009688 !important;">ChouchGh</h3>
+            <div class="card-content" style="-webkit-box-sizing: inherit;box-sizing: inherit;padding: 24px;border-radius: 0 0 2px 2px;">
+                <h4 style="-webkit-box-sizing: inherit;box-sizing: inherit;font-weight: 400;line-height: 110%;font-size: 2.28rem;margin: 1.14rem 0 .912rem 0;">Verify your email</h4>
+                <br style="-webkit-box-sizing: inherit;box-sizing: inherit;">
+                <p style="-webkit-box-sizing: inherit;box-sizing: inherit;margin: 0;color: inherit;">Please click the button below to verify your email.</p>
+            </div>
+            <div class="card-action" style="-webkit-box-sizing: inherit;box-sizing: inherit;position: relative;background-color: inherit;border-top: 1px solid rgba(160,160,160,0.2);padding: 16px 24px;border-radius: 0 0 2px 2px;">
+                <a href="http://localhost:8080/verify/`+ userId +`" class="btn waves-effect teal" style="-webkit-box-sizing: inherit;box-sizing: inherit;background-color: #009688 !important;color: #fff;text-decoration: none;-webkit-tap-highlight-color: transparent;-webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);border: none;border-radius: 2px;display: inline-block;height: 36px;line-height: 36px;padding: 0 2rem;text-transform: uppercase;vertical-align: middle;font-size: 1rem;outline: 0;text-align: center;letter-spacing: .5px;-webkit-transition: .3s ease-out;transition: .3s ease-out;cursor: pointer;position: relative;overflow: hidden;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;z-index: 1;">Verify</a>
+            </div>
+        </div>
+        </div>
 </body>
 </html>
         `
