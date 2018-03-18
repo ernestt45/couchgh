@@ -106,8 +106,59 @@ var registerUser = function(req, res){
         email: req.body.email,
         password: req.body.password,
     }).save((err, data) => {
-        if (err)
-            res.send(err)
+
+        if (err) res.send(err)
+        
+        sendMail(req,res)
+
         res.send(data)
     })
+
+    
 }
+
+var sendMail = function(req, res){
+
+    var nodemailer = require('nodemailer')
+
+    //Include your configurations in server/config/email
+    var EmailConfig = require('../config/email')
+
+    var transporter = nodemailer.createTransport(EmailConfig.tramsportMethod, {
+        service: EmailConfig.service,
+        secure: true,
+        port: EmailConfig.port,
+        host: EmailConfig.host,
+        auth: {
+            user: EmailConfig.auth.user,
+            pass: EmailConfig.auth.pass
+        }
+    });
+
+    var mailOptions = {
+        from: 'no-reply@chochgh.com',
+        to: req.body.email,
+        subject: 'Sending Email ChochGh',
+        html: 
+        `<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChochGh Verification Mail</title>
+</head>
+<body>
+    <h1>Thank you for registering to ChochGh trips and tours....</h1>
+</body>
+</html>
+        `
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + req.body.email);
+        }
+    });
+} 
