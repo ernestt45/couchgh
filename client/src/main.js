@@ -6,7 +6,9 @@ import router from './router'
 import resource from 'vue-resource'
 import materialize from 'materialize-css'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import Vuex from 'vuex'
 
+import Store from './store/store'
 import Api from '../config/api'
 
 import 'materialize-css/dist/css/materialize.css'
@@ -21,6 +23,7 @@ Vue.use(VueGoogleMaps, {
     // (as you require)
   }
 })
+Vue.use(Vuex)
 Vue.use(resource)
 
 Vue.config.productionTip = false
@@ -30,6 +33,7 @@ export var bus = new Vue()
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store: Store,
   router,
   components: { App },
   template: '<App/>'

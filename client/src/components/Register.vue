@@ -6,7 +6,7 @@
                 <error></error>
                 <h3 >Register</h3>
             </div>
-            <form slot="form">
+            <form action="/register" method="post" slot="form">
                 <div class="container">
                     <div class="input-field">
                         <i class="material-icons prefix">account_circle</i>
@@ -29,18 +29,30 @@
                         <label for="confirm_password">Confirm Password</label>
                     </div>
                     <blockquote class="teal-text">
-                        By clicking Create Account, you agree to our Terms and Conditions.
+                        By clicking Register, you agree to our Terms and Conditions of online booking and management.
                     </blockquote>
                 </div>
             </form>
-            <button @click="registerUser" slot="button" class="btn waves-effect">Register</button>
+            <button @click.prevent="registerUser" slot="button" class="btn waves-effect">Register</button>
         </home-form>
+        <div id="successModal" class="modal bottom-sheet">
+            <div class="modal-content">
+                <h4 class="teal-text">Registration Successfull</h4>
+                <blockquote>A verification mail has been sent to your mail. Please verify to activate your account</blockquote>
+            </div>
+            <div class="modal-footer">
+                <router-link to="/login" class="modal-action modal-close waves-effect waves-green btn-flat">login</router-link>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 import HomeForm from '@/components/includes/HomeForm'
 import Navbar from '@/components/includes/navbar'
 import Error from '@/components/includes/error'
+
+import $ from 'jquery'
+import materialize from 'materialize-css'
 
 import config from '../../config/api'
 import {bus} from '../main'
@@ -62,15 +74,31 @@ export default {
     registerUser(){
 
         this.passMatch()
+            console.log(!this.usernameExist, !this.emailExist, this.password.length, this.password, this.confirm_password)
 
         if (
-            (!this.usernameExist && !this.email)&&
+            (!this.usernameExist && !this.emailExist)&&
             (this.password.length >= 6)&&
             (this.password == this.confirm_password)) 
         {
             
-            this.$http.post(config.host+'user/register').then((data)=>{
-                console.log(data)
+            var data = {
+                username: this.username,
+                email: this.email,
+                password: this.password
+            }
+            
+            this.$http.post(config.host+'/user/register', data).then((data)=>{
+                if (data.status == 200) {
+                    $('#successModal').modal('open');
+                }else{
+                    bus.$emit('error',{
+                        color: 'red',
+                        message: 'There seems to be an error registering you'
+                    })
+                }
+            }).catch((err)=>{
+               // console.log(err)
             })
         }
     },
@@ -115,14 +143,19 @@ export default {
         }
     },
     passMatch(){
+        bus.$emit('error',{})
         if (this.password !== this.confirm_password) {
             bus.$emit('error',{
                 color: 'orange',
                 message: 'passwords do not match'
             })
         }
-    }
-        
+    }   
+  },
+  created(){
+    $(document).ready(function(){
+        $('.modal').modal();
+    });
   }
 }
 </script>

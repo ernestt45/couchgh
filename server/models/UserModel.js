@@ -23,7 +23,11 @@ var UserSchema = mongoose.Schema({
         required: true
     },
     gender: String,
-    dateOfBirth: String
+    dateOfBirth: String,
+    status: {
+        type: String,
+        default: "unactivated"
+    }
 }) 
 
 
