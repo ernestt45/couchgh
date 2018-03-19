@@ -4,6 +4,7 @@
         <home-form>
             <div slot="title">
                 <error></error>
+                <loading></loading>
                 <h3 >Register</h3>
             </div>
             <form action="/register" method="post" slot="form">
@@ -29,7 +30,7 @@
                         <label for="confirm_password">Confirm Password</label>
                     </div>
                     <blockquote class="teal-text">
-                        By clicking Register, you agree to our Terms and Conditions of online booking and management.
+                        By clicking Register, you agree to our Terms and Conditions of Our Online Booking and Reservations.
                     </blockquote>
                 </div>
             </form>
@@ -50,6 +51,8 @@
 import HomeForm from '@/components/includes/HomeForm'
 import Navbar from '@/components/includes/navbar'
 import Error from '@/components/includes/error'
+import Loading from '@/components/includes/ProgressLoader'
+
 
 import $ from 'jquery'
 import materialize from 'materialize-css'
@@ -59,7 +62,7 @@ import {bus} from '../main'
 
 export default {
   name: 'register',
-  components: {HomeForm,Navbar,Error},
+  components: {HomeForm,Navbar,Error, Loading},
   data(){
       return {
           username: '',
@@ -88,6 +91,7 @@ export default {
                 password: this.password
             }
             
+            bus.$emit('loading', true)
             this.$http.post(config.host+'/user/register', data).then((data)=>{
                 if (data.status == 200) {
                     $('#successModal').modal('open');
@@ -97,8 +101,14 @@ export default {
                         message: 'There seems to be an error registering you'
                     })
                 }
+            bus.$emit('loading', false)
+                
             }).catch((err)=>{
-               // console.log(err)
+            bus.$emit('loading', false)                
+            bus.$emit('error',{
+                        color: 'red',
+                        message: 'There was a problem connecting to the server'
+                    })
             })
         }
     },

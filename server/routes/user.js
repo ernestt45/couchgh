@@ -53,7 +53,7 @@ router.get('/verify/:value', (req, res)=>{
     User.updateOne({ _id: req.params.value }, {status: 'activated'},(err, doc) => {
         if (!doc || err) {
             res.json('Hello funny guy')
-        }
+        }else
         res.redirect('http://localhost:8080/login')
     })
 })
@@ -176,7 +176,7 @@ var sendMail = function(req, res, userId){
                 <p style="-webkit-box-sizing: inherit;box-sizing: inherit;margin: 0;color: inherit;">Please click the button below to verify your email.</p>
             </div>
             <div class="card-action" style="-webkit-box-sizing: inherit;box-sizing: inherit;position: relative;background-color: inherit;border-top: 1px solid rgba(160,160,160,0.2);padding: 16px 24px;border-radius: 0 0 2px 2px;">
-                <a href="http://localhost:8080/verify/`+ userId +`" class="btn waves-effect teal" style="-webkit-box-sizing: inherit;box-sizing: inherit;background-color: #009688 !important;color: #fff;text-decoration: none;-webkit-tap-highlight-color: transparent;-webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);border: none;border-radius: 2px;display: inline-block;height: 36px;line-height: 36px;padding: 0 2rem;text-transform: uppercase;vertical-align: middle;font-size: 1rem;outline: 0;text-align: center;letter-spacing: .5px;-webkit-transition: .3s ease-out;transition: .3s ease-out;cursor: pointer;position: relative;overflow: hidden;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;z-index: 1;">Verify</a>
+                <a href="http://localhost:8081/user/verify/`+ userId +`" class="btn waves-effect teal" style="-webkit-box-sizing: inherit;box-sizing: inherit;background-color: #009688 !important;color: #fff;text-decoration: none;-webkit-tap-highlight-color: transparent;-webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 1px 5px 0 rgba(0,0,0,0.12),0 3px 1px -2px rgba(0,0,0,0.2);border: none;border-radius: 2px;display: inline-block;height: 36px;line-height: 36px;padding: 0 2rem;text-transform: uppercase;vertical-align: middle;font-size: 1rem;outline: 0;text-align: center;letter-spacing: .5px;-webkit-transition: .3s ease-out;transition: .3s ease-out;cursor: pointer;position: relative;overflow: hidden;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;z-index: 1;">Verify</a>
             </div>
         </div>
         </div>

@@ -1,6 +1,7 @@
 <template>
     <div>
         <navbar></navbar>
+        <loading></loading>
         <home-form>
             <h3 slot="title">Login</h3>
             <form slot="form">
@@ -27,10 +28,11 @@
 <script>
 import HomeForm from '@/components/includes/HomeForm'
 import Navbar from '@/components/includes/navbar'
+import Loading from '@/components/includes/ProgressLoader'
 
 export default {
   name: 'login',
-  components: {HomeForm,Navbar}
+  components: {HomeForm,Navbar,Loading}
 }
 </script>
 
