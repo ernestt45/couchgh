@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
+import Verify from '@/components/Verify'
 
 Vue.use(Router)
 
@@ -22,7 +23,18 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
-    }
+    },
+    {
+      path: '/verify/:token',
+      component: Verify,
+      name: 'verify'
+    },
+
+// Redirects
+     {
+      path: '/verify',
+      redirect: '/login'
+    },
   ],
   mode: 'history'
 })

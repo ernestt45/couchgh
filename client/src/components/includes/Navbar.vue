@@ -1,7 +1,7 @@
 <template>
   <nav class="teal">
     <div class="nav-wrapper  container">
-      <router-link to="/" class="brand-logo">ChochGh <i class="material-icons right">airport_shuttle</i></router-link>
+      <router-link to="/" class="brand-logo">OneTravel <i class="material-icons right">airport_shuttle</i></router-link>
       <a href="#mobile-side" data-activates="mobile-side" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
         <li><router-link to="/login" >Login</router-link></li>

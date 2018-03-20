@@ -19,6 +19,7 @@ db.once('open',()=>{
     console.log('Connected to Mongo successfully')
 })
 
+// Register User
 router.post('/register', (req, res) => {
     User.findOne({ username: req.body.username }, (err, data) => {
         if (data) {
@@ -48,7 +49,60 @@ router.post('/register', (req, res) => {
     })
 })
 
+router.post('/login', (req, res)=>{
+    var body = req.body
+    // Checking if username and password ligit
+    if (body.username == undefined) {
+        res.json({
+            error: 'Username not provided',
+            message: 'The Username or Email field hasn\'t been provided'
+        })
+    }
 
+    if (body.password <= 6) {
+        res.json({
+            error: 'Password is short',
+            message: 'Password should be more than 6 characters long'
+        })
+    }
+
+    User.findOne({$or: [
+        { username: body.username, password: body.password},
+        { email: body.username, password: body.password }
+    ]},(err, data)=>{
+        if (err) {
+            res.status(500).json({
+                error: 'Can\'t sign',
+                message: 'Can\'t sign in at the moment... please try again later'
+            })
+        }
+
+        if (data) {
+            var userCreds = {
+                _id: data._id,
+                username: data.username,
+                email: data.email
+            }
+
+            var jwt = require('jsonwebtoken')
+            jwt.sign(userCreds, 'iLoveChochGh', { expiresIn: '1h' }, (err, token)=>{
+                res.json({
+                    uid: data._id,
+                    token: token
+                })
+            })
+
+        }else{
+            res.json({
+                error: 'no user',
+                message: 'Wrong username or password provided'
+            })
+        }
+
+    })
+})
+
+// Verify Email With Id
 router.get('/verify/:value', (req, res)=>{
     User.updateOne({ _id: req.params.value }, {status: 'activated'},(err, doc) => {
         if (!doc || err) {
@@ -58,6 +112,7 @@ router.get('/verify/:value', (req, res)=>{
     })
 })
 
+// Does User Exist
 router.get('/:type/:value/exist', (req, res) => {
     switch (req.params.type) {
         case 'username':
@@ -78,7 +133,7 @@ router.get('/:type/:value/exist', (req, res) => {
             break;
 
         case 'email':
-            User.findOne({ 'email': req.params.value }, (err, data) => {
+            User.count({ 'email': req.params.value }, (err, data) => {
                 if (err) {
                     throw err
                 }
@@ -143,6 +198,7 @@ var sendMail = function(req, res, userId){
         }
     });
 
+
     var mailOptions = {
         from: 'no-reply@chochgh.com',
         to: req.body.email,
@@ -187,9 +243,9 @@ var sendMail = function(req, res, userId){
 
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-            console.log(error);
+            console.log('Could\'t send email to:',req.body.email);
         } else {
-            console.log('Email sent: ' + req.body.email);
+            console.log('Email sent: ',req.body.email);
         }
     });
 } 

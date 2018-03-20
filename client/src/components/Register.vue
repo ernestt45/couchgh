@@ -91,25 +91,7 @@ export default {
                 password: this.password
             }
             
-            bus.$emit('loading', true)
-            this.$http.post(config.host+'/user/register', data).then((data)=>{
-                if (data.status == 200) {
-                    $('#successModal').modal('open');
-                }else{
-                    bus.$emit('error',{
-                        color: 'red',
-                        message: 'There seems to be an error registering you'
-                    })
-                }
-            bus.$emit('loading', false)
-                
-            }).catch((err)=>{
-            bus.$emit('loading', false)                
-            bus.$emit('error',{
-                        color: 'red',
-                        message: 'There was a problem connecting to the server'
-                    })
-            })
+            this.$store.dispatch('registerUser', data)
         }
     },
     isUsername(e){

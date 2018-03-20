@@ -8,17 +8,17 @@
                 <div class="container">
                     <div class="input-field">
                         <i class="material-icons prefix">account_circle</i>
-                        <input id="username" type="text" class="validate">
+                        <input v-model="username" id="username" type="text" class="validate">
                         <label for="username">Username</label>
                     </div>
                     <div class="input-field ">
                         <i class="material-icons prefix">lock</i>
-                        <input id="password" type="password" class="validate">
+                        <input v-model="password" id="password" type="password" class="validate">
                         <label for="password">Password</label>
                     </div>
                 </div>
             </form>
-            <button slot="button" class="btn waves-effect">Login</button>
+            <button @click="login" slot="button" class="btn waves-effect">Login</button>
             <div slot="footer">
                 <p class="right">Don't have an account? <router-link to="/register">register</router-link></p>
             </div>
@@ -30,9 +30,22 @@ import HomeForm from '@/components/includes/HomeForm'
 import Navbar from '@/components/includes/navbar'
 import Loading from '@/components/includes/ProgressLoader'
 
+import {bus} from '../main'
+
 export default {
   name: 'login',
-  components: {HomeForm,Navbar,Loading}
+  components: {HomeForm,Navbar,Loading},
+  data(){
+      return {
+          username: '',
+          password: '',
+      }
+  },
+  methods:{
+      login(){
+          bus.$emit('loading', true)
+      }
+  }
 }
 </script>
 
