@@ -15,14 +15,15 @@ const store = new Vuex.Store({
     state:{
         user:{
             token: '',
-            uid: '', 
         }
     },
     getters:{
 
     },
     mutations:{
-
+        setUserToken(state, payload){
+            state.user = payload
+        }
     },
     actions:{
         registerUser({commit},payload){
@@ -47,8 +48,30 @@ const store = new Vuex.Store({
                 })
             })
         },
-        loginUser({commit}, payload){
-
+        loginUser({commit, getters}, payload){
+            console.log('Checking user credentials')
+            bus.$emit('loading',true)
+            axios.post(config.host+'/user/login', payload).then(user=>{
+                if (user.data) {
+                    if (user.data.error) {
+                        bus.$emit('error', {
+                            message: user.data.message,
+                            color: 'orange'
+                        })
+                    }else{
+                        commit('setUserToken', user.data.token)                 
+                        console.log('Got Token:', user.data.token)
+                    }
+                }else{
+                    bus.$emit('error',{
+                        message: 'Can\'t connect to our server',
+                        color: 'orange'
+                    })
+                }
+                setTimeout(function() {
+                    bus.$emit('loading', false)       
+                }, 5000);
+            })
         }
     }
 })

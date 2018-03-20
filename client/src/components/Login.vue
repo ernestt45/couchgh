@@ -3,7 +3,10 @@
         <navbar></navbar>
         <loading></loading>
         <home-form>
-            <h3 slot="title">Login</h3>
+            <div slot="title">
+                <error></error>
+                <h3>Login</h3>
+            </div>
             <form slot="form">
                 <div class="container">
                     <div class="input-field">
@@ -29,12 +32,13 @@
 import HomeForm from '@/components/includes/HomeForm'
 import Navbar from '@/components/includes/navbar'
 import Loading from '@/components/includes/ProgressLoader'
+import Error from '@/components/includes/error'
 
 import {bus} from '../main'
 
 export default {
   name: 'login',
-  components: {HomeForm,Navbar,Loading},
+  components: {HomeForm,Navbar,Loading, Error},
   data(){
       return {
           username: '',
@@ -43,7 +47,17 @@ export default {
   },
   methods:{
       login(){
-          bus.$emit('loading', true)
+          if (this.username == '' || this.password == '') {
+              bus.$emit('error',{
+                  color: 'orange',
+                  message: 'Please provide the username and password'
+              })
+          }else{
+              this.$store.dispatch('loginUser',{
+                  username: this.username,
+                  password: this.password
+              })
+          }
       }
   }
 }

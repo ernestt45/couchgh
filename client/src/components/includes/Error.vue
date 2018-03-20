@@ -1,21 +1,21 @@
 <template>
     <transition name="fade" mode="out-in">
-        <div v-if="error" class="" :class="error.color"><h5 class="center white-text flow-text">{{error.message}}</h5></div>
+        <div v-if="err" class="" :class="err.color"><h5 class="center white-text flow-text">{{err.message}}</h5></div>
     </transition>
 </template>
 <script>
 import {bus} from '../../main'
 
     export default {
-        name: 'error',
+        name: 'error-handler',
         data(){
             return {
-                error: {}
+                err: {}
             }
         },
         created(){
             bus.$on('error',(data)=>{
-                this.error = data
+                this.err = data
             })
         }
     }

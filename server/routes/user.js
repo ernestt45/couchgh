@@ -1,10 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
-const User = require('../models/UserModel')
+
+//Modules
+const LoginUSer = require('../modules/login')
+const RegisterUser = require('../modules/registerUser')
+const Verify = require('../modules/verifyUser')
 
 const router = express.Router()
-
+const User = require('../models/UserModel')
 const dbConfig = require('../config/db')
 
 //connect to mongo db server
@@ -20,97 +24,13 @@ db.once('open',()=>{
 })
 
 // Register User
-router.post('/register', (req, res) => {
-    User.findOne({ username: req.body.username }, (err, data) => {
-        if (data) {
-            res.json({
-                error: "username exist\'s",
-                message: "the username " + data.username + ", is already in use"
-            })
-        } else {
-            User.findOne({ email: req.body.email }, (err, data) => {
-                if (data) {
-                    res.json({
-                        error: "email exist\'s",
-                        message: "the email " + data.email + ", is already in use"
-                    })
-                } else {
-                    if (req.body.password.length < 6) {
-                        res.json({
-                            error: "short password",
-                            message: "password should be more than 6 characters long"
-                        })
-                    } else {
-                        registerUser(req, res)
-                    }
-                }
-            })
-        }
-    })
-})
+router.post('/register', RegisterUser)
 
-router.post('/login', (req, res)=>{
-    var body = req.body
-    // Checking if username and password ligit
-    if (body.username == undefined) {
-        res.json({
-            error: 'Username not provided',
-            message: 'The Username or Email field hasn\'t been provided'
-        })
-    }
-
-    if (body.password <= 6) {
-        res.json({
-            error: 'Password is short',
-            message: 'Password should be more than 6 characters long'
-        })
-    }
-
-    User.findOne({$or: [
-        { username: body.username, password: body.password},
-        { email: body.username, password: body.password }
-    ]},(err, data)=>{
-        if (err) {
-            res.status(500).json({
-                error: 'Can\'t sign',
-                message: 'Can\'t sign in at the moment... please try again later'
-            })
-        }
-
-        if (data) {
-            var userCreds = {
-                _id: data._id,
-                username: data.username,
-                email: data.email
-            }
-
-            var jwt = require('jsonwebtoken')
-            jwt.sign(userCreds, 'iLoveChochGh', { expiresIn: '1h' }, (err, token)=>{
-                res.json({
-                    uid: data._id,
-                    token: token
-                })
-            })
-
-        }else{
-            res.json({
-                error: 'no user',
-                message: 'Wrong username or password provided'
-            })
-        }
-
-    })
-})
+// Login user
+router.post('/login', LoginUSer)
 
 // Verify Email With Id
-router.get('/verify/:value', (req, res)=>{
-    User.updateOne({ _id: req.params.value }, {status: 'activated'},(err, doc) => {
-        if (!doc || err) {
-            res.json('Hello funny guy')
-        }else
-        res.redirect('http://localhost:8080/login')
-    })
-})
+router.get('/verification/:value', Verify)
 
 // Does User Exist
 router.get('/:type/:value/exist', (req, res) => {
@@ -154,7 +74,7 @@ router.get('/:type/:value/exist', (req, res) => {
     }
 })
 
-
+// User Api route
 router.get('/', (req, res) => {
     res.send('User Api')
 })

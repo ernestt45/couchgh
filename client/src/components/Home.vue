@@ -1,5 +1,7 @@
 <template>
-  
+    <div>
+        Welcome To Home
+    </div>
 </template>
 <script>
     
