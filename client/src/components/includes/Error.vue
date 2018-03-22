@@ -1,6 +1,6 @@
 <template>
     <transition name="fade" mode="out-in">
-        <div v-if="err" class="" :class="err.color"><h5 class="center white-text flow-text">{{err.message}}</h5></div>
+        <div v-if="err" class="truncate" :class="err.color"><h5 class="center white-text flow-text">{{err.message}}</h5></div>
     </transition>
 </template>
 <script>
@@ -14,7 +14,10 @@ import {bus} from '../../main'
             }
         },
         created(){
-            bus.$on('error',(data)=>{
+            bus.$on('error', (data)=>{
+                if (data.color == undefined) {
+                    data.color = 'orange'
+                }
                 this.err = data
             })
         }

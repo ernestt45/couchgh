@@ -105,16 +105,17 @@ var sendMail = function(req, res, userId){
     var nodemailer = require('nodemailer')
 
     //Include your configurations in server/config/email
-    var EmailConfig = require('../config/email')
+    var config = require('../config/config')
+    config = config.email
 
-    var transporter = nodemailer.createTransport(EmailConfig.tramsportMethod, {
-        service: EmailConfig.service,
+    var transporter = nodemailer.createTransport(config.tramsportMethod, {
+        service: config.service,
         secure: true,
-        port: EmailConfig.port,
-        host: EmailConfig.host,
+        port: config.port,
+        host: config.host,
         auth: {
-            user: EmailConfig.auth.user,
-            pass: EmailConfig.auth.pass
+            user: config.auth.user,
+            pass: config.auth.pass
         }
     });
 

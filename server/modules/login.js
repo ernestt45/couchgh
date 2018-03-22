@@ -17,6 +17,7 @@ var loginUSer = (req, res)=>{
         })
     }
 
+    // Find username or email and password
     User.findOne({
         $or: [
             { username: body.username, password: body.password },
@@ -37,9 +38,11 @@ var loginUSer = (req, res)=>{
                 email: data.email
             }
 
+            // Setting the webtoken
             var jwt = require('jsonwebtoken')
             jwt.sign(userCreds, 'iLoveChochGh', { expiresIn: '1h' }, (err, token) => {
                 res.json({
+                    uid: data._id,
                     token: token
                 })
             })

@@ -3,8 +3,9 @@ const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-
-mongoose.connect("mongodb://localhost:27017/chochgh")
+//Importing configs
+const config = require('./config/config')
+mongoose.connect(config.db.connector)
 
 
 const Trips = require('./routes/trips')
@@ -22,7 +23,7 @@ app.use(function (err, req, res, next) {
     res.status(500).send('Something broke!')
 })
 
-app.use('/trips', Trips)
+app.use('/trip', Trips)
 app.use('/user', User)
 
 app.listen(8081,()=>{

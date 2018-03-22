@@ -13,15 +13,22 @@ function postData(url, data){
 
 const store = new Vuex.Store({
     state:{
-        user:{
-            token: '',
-        }
+        user:{}, 
     },
     getters:{
-
+        getUser: (state)=>{
+            return state.user
+        },
+        isAuth: (state)=>{
+            if (state.user.token != undefined) {
+                return true
+            }else{
+                return false
+            }
+        }
     },
     mutations:{
-        setUserToken(state, payload){
+        setUser(state, payload){
             state.user = payload
         }
     },
@@ -48,6 +55,7 @@ const store = new Vuex.Store({
                 })
             })
         },
+
         loginUser({commit, getters}, payload){
             console.log('Checking user credentials')
             bus.$emit('loading',true)
@@ -59,8 +67,11 @@ const store = new Vuex.Store({
                             color: 'orange'
                         })
                     }else{
-                        commit('setUserToken', user.data.token)                 
+                        localStorage.setItem('token', user.data.token)
+                        localStorage.setItem('uid', user.data.uid)
+                        commit('setUser', user.data)
                         console.log('Got Token:', user.data.token)
+                        bus.$emit('isUser', true)
                     }
                 }else{
                     bus.$emit('error',{
@@ -68,9 +79,30 @@ const store = new Vuex.Store({
                         color: 'orange'
                     })
                 }
-                setTimeout(function() {
-                    bus.$emit('loading', false)       
-                }, 5000);
+                bus.$emit('loading', false)
+            })
+        },
+
+        logoutUser({commit},payload){
+            localStorage.removeItem('token')
+            commit('setUser', {})
+            bus.$emit('user')
+        },
+
+        findTrips({commit},payload){
+            bus.$emit('loading',true)
+            axios.post(config.host+'/trip', payload).then((data)=>{
+                console.log(data)
+                bus.$emit('loading', false)
+                
+            }).catch((err)=>{
+                bus.$emit('error',{
+                    color: 'red',
+                    message: 'There was an error connecting to our servers'
+                })
+                console.log(err)
+                bus.$emit('loading', false)
+                
             })
         }
     }

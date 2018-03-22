@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router()
+const getTrips = require('../modules/getTrips')
 
-router.get('/',(req,res)=>{
+router.post('/', getTrips)
+
+router.get('/', (req, res) => {
     res.send('Getting all trips')
 })
 

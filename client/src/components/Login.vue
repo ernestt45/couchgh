@@ -43,6 +43,7 @@ export default {
       return {
           username: '',
           password: '',
+          isAuth: this.$store.getters.isAuth || false
       }
   },
   methods:{
@@ -59,6 +60,19 @@ export default {
               })
           }
       }
+  },
+  created(){
+
+
+      console.log(this.$store.getters.isAuth)
+
+      if (this.isAuth) {
+          this.$router.push('/')
+      }
+
+      bus.$on('isUser', (payload)=>{
+          this.$router.push('/')
+      })
   }
 }
 </script>

@@ -4,7 +4,15 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  created(){
+    if (localStorage.getItem('token')) {
+      this.$store.dispatch('setUser',{
+        uid: localStorage.getItem('uid'),
+        token: localStorage.getItem('token')
+      })
+    }
+  }
 }
 </script>
 
