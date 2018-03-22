@@ -10,16 +10,16 @@ var TripsSchema = mongoose.Schema({
         required: true,
     },
     date: {
-        type: Date,
-        required: true,
-    },
-    time: {
         type: String,
-        default: 'evening'
+        required: true,
     },
     vendor: {
         type: String,
         required: true
+    },
+    time: {
+        type: String,
+        default: 'morning'
     },
     ammount: {
         type: Number

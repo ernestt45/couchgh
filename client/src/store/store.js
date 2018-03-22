@@ -13,7 +13,9 @@ function postData(url, data){
 
 const store = new Vuex.Store({
     state:{
-        user:{}, 
+        user:{},
+        bookings: [],
+        trips: []
     },
     getters:{
         getUser: (state)=>{
@@ -25,11 +27,21 @@ const store = new Vuex.Store({
             }else{
                 return false
             }
+        },
+        getTrips: (state)=>{
+            return state.trips
         }
     },
     mutations:{
         setUser(state, payload){
             state.user = payload
+        },
+        loading(state, payload){
+            state.loading = payload
+        },
+        setTrips(state, payload){
+            state.trips = payload
+            bus.$emit('trips')
         }
     },
     actions:{
@@ -91,9 +103,18 @@ const store = new Vuex.Store({
 
         findTrips({commit},payload){
             bus.$emit('loading',true)
-            axios.post(config.host+'/trip', payload).then((data)=>{
-                console.log(data)
-                bus.$emit('loading', false)
+            bus.$emit('error', undefined)
+            axios.post(config.host+'/trip', payload).then((trips)=>{
+                if (trips.data[0] != undefined) {
+                    console.log(trips.data[0])
+                    commit('setTrips', trips.data)
+                    bus.$emit('loading', false)
+                }else{
+                    bus.$emit('error',{
+                        color: 'blue',
+                        message: 'There are\'t any trips on this picked date'
+                    })
+                }
                 
             }).catch((err)=>{
                 bus.$emit('error',{

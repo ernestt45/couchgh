@@ -33,6 +33,31 @@
                             </form>
                         </div>
                     </div>
+                <transition name="fade" mode="out-in">
+                    <table v-if="trips" class="centered container">
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Vender</th>
+                            <th>Price</th>
+                            <th>Book</th>
+                        </tr>
+                        
+                        <tr v-for="trip in trips" :key="trip._id">
+                            <td>{{trip.from}}</td>
+                            <td>{{trip.to}}</td>
+                            <td>{{new Date(trip.date).toDateString()}}</td>
+                            <td>{{trip.time}}</td>
+                            <td>{{trip.vendor}}</td>
+                            <td>{{trip.ammount}}</td>
+                            <td><button class="btn btn-floating waves-effect hoverable">
+                                <i class="large material-icons">add</i>
+                                </button></td>
+                        </tr>
+                    </table>
+                </transition>
                 </div>
             </div>
         </div>
@@ -50,7 +75,8 @@
             return {
                 from: '',
                 to: '',
-                date: ''
+                date: '',
+                trips: '',
             }
         },
         methods:{
@@ -70,9 +96,6 @@
             }
         },
         created(){
-
-            
-
             //setting the date to the current day
             var date = new Date()
             var month =date.getMonth()+1
@@ -84,7 +107,11 @@
                 month+'-'+
                 date.getDate().toString()
             )
-            console.log(this.date)
+
+
+            bus.$on('trips',()=>{
+                this.trips = this.$store.getters.getTrips
+            })
         }
     }
 
