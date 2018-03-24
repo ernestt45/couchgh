@@ -1,7 +1,7 @@
 <template>
   <div id="form" class="container">
     <div class="row">
-        <div class="col s12 m6 offset-m6">
+        <div class="col s12">
           <div class="card">
             <div class="card-content white-text">
               <span class="card-title center teal-text"><slot name="title"></slot></span>

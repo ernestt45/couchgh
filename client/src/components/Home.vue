@@ -1,6 +1,7 @@
 -<template>
     <div>
         <navbar></navbar>
+        <loader></loader>
         <error></error>
         <div class="container">
             <div class="center">
@@ -34,28 +35,35 @@
                         </div>
                     </div>
                 <transition name="fade" mode="out-in">
-                    <table v-if="trips" class="centered container">
-                        <tr>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Vender</th>
-                            <th>Price</th>
-                            <th>Book</th>
-                        </tr>
-                        
-                        <tr v-for="trip in trips" :key="trip._id">
-                            <td>{{trip.from}}</td>
-                            <td>{{trip.to}}</td>
-                            <td>{{new Date(trip.date).toDateString()}}</td>
-                            <td>{{trip.time}}</td>
-                            <td>{{trip.vendor}}</td>
-                            <td>{{trip.ammount}}</td>
-                            <td><button class="btn btn-floating waves-effect hoverable">
-                                <i class="large material-icons">add</i>
-                                </button></td>
-                        </tr>
+                    <table v-if="trips" class="centered  striped responsive-table">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Date</th>
+                                <th>Departure Time</th>
+                                <th>Vender</th>
+                                <th>Price</th>
+                                <th>Seats Available</th>
+                                <th>Book</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="trip in trips" :key="trip._id">
+                                <td>{{trip.from}}</td>
+                                <td>{{trip.to}}</td>
+                                <td>{{new Date(trip.date).toDateString()}}</td>
+                                <td>{{trip.time}}</td>
+                                <td>{{trip.vendor}}</td>
+                                <td>{{trip.ammount}}</td>
+                                <td>{{trip.seatsAvailable}}</td>
+                                <td>
+                                    <button @click="bookTrip(trip._id)" class="btn btn-floating waves-effect hoverable pulse">
+                                        <i class="large material-icons">add</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </transition>
                 </div>
@@ -67,10 +75,11 @@
     
     import Navbar from './includes/navbar'
     import Error from './includes/error'
+    import Loader from './includes/progressLoader'
     import {bus} from '../main'
     export default {
         name: 'Home',
-        components: {Navbar,Error},
+        components: {Navbar,Error,Loader},
         data(){
             return {
                 from: '',
@@ -93,6 +102,8 @@
                         date: this.date
                     })
                 }
+            },bookTrip:function(uid){
+                this.$router.push('book/'+uid)
             }
         },
         created(){

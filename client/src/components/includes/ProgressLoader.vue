@@ -1,5 +1,5 @@
 <template>
-    <div :class="{progress : loading}">
+    <div :class="{'progress': loading}">
         <div class="indeterminate"></div>
     </div>
 </template>

@@ -24,8 +24,7 @@ var getTrips = (req, res)=>{
             )
         }
         
-        Trips.find({ from: body.from, to: body.to, date: body.date},(err, doc)=>{
-            console.log(body.date)
+        Trips.find({ from: body.from, to: body.to, date: body.date}).sort({ seatsAvailable: -1 }).exec((err, doc)=>{
             res.json(doc)
         })
     }

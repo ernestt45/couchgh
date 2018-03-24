@@ -5,6 +5,7 @@ import Register from '@/components/Register'
 import Login from '@/components/Login'
 import Verify from '@/components/Verify'
 import Trips from '@/components/Trips'
+import Book from '@/components/Book'
 
 Vue.use(Router)
 
@@ -15,14 +16,13 @@ export default new Router({
     {path: '/login',name: 'login',component: Login},
     {path: '/trips/:from/:to/:date', name: 'trips', component: Trips },
     {path: '/trips/:date', name: 'trips', component: Trips },
-    {path: '/trips/', component: Trips},
+    {path: '/trips', component: Trips },
+    {path: '/book/:uid', component: Book },
     {path: '/verify/:token',component: Verify,name: 'verify'},
-
-// Redirects
-     {
-      path: '/verify',
-      redirect: '/login'
-    },
+    
+    // Redirects
+    {path: '/book', redirect: '/'},
+    {path: '/verify',redirect: '/login'},
   ],
   mode: 'history'
 })

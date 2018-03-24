@@ -15,10 +15,14 @@ import {bus} from '../../main'
         },
         created(){
             bus.$on('error', (data)=>{
-                if (data.color == undefined) {
-                    data.color = 'orange'
+                if (data) {
+                    if (data.color == undefined) {
+                        data.color = 'orange'
+                    }
+                    this.err = data
+                }else{
+                    this.err = {}
                 }
-                this.err = data
             })
         }
     }

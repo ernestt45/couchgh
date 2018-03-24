@@ -15,9 +15,13 @@ const store = new Vuex.Store({
     state:{
         user:{},
         bookings: [],
-        trips: []
+        trips: [],
+        error: ''
     },
     getters:{
+        getError: (state)=>{
+            return state.error
+        },
         getUser: (state)=>{
             return state.user
         },
@@ -42,6 +46,10 @@ const store = new Vuex.Store({
         setTrips(state, payload){
             state.trips = payload
             bus.$emit('trips')
+        },
+        setError(state,payload){
+            state.error = payload
+            bus.$emit('error')
         }
     },
     actions:{
@@ -97,20 +105,20 @@ const store = new Vuex.Store({
 
         logoutUser({commit},payload){
             localStorage.removeItem('token')
-            commit('setUser', {})
+            commit('setUser', '')
             bus.$emit('user')
         },
 
         findTrips({commit},payload){
-            bus.$emit('loading',true)
-            bus.$emit('error', undefined)
+            commit('setError', '')
+            bus.$emit('loading', true)
             axios.post(config.host+'/trip', payload).then((trips)=>{
                 if (trips.data[0] != undefined) {
                     console.log(trips.data[0])
                     commit('setTrips', trips.data)
                     bus.$emit('loading', false)
                 }else{
-                    bus.$emit('error',{
+                    commit('setError',{
                         color: 'blue',
                         message: 'There are\'t any trips on this picked date'
                     })
