@@ -16,7 +16,9 @@ const store = new Vuex.Store({
         user:{},
         bookings: [],
         trips: [],
-        error: ''
+        error: '',
+        tempTrip: {},
+        tempUser:{}
     },
     getters:{
         getError: (state)=>{
@@ -34,6 +36,9 @@ const store = new Vuex.Store({
         },
         getTrips: (state)=>{
             return state.trips
+        },
+        getTempTrip: state=>{
+            return state.tempTrip
         }
     },
     mutations:{
@@ -50,6 +55,10 @@ const store = new Vuex.Store({
         setError(state,payload){
             state.error = payload
             bus.$emit('error')
+        },
+        setTempTrip(state, payload){
+            state.tempTrip = payload
+            bus.$emit('tempTrip')
         }
     },
     actions:{
@@ -118,20 +127,30 @@ const store = new Vuex.Store({
                     commit('setTrips', trips.data)
                     bus.$emit('loading', false)
                 }else{
-                    commit('setError',{
+                    bus.$emit('error',{
                         color: 'blue',
                         message: 'There are\'t any trips on this picked date'
                     })
+                    bus.$emit('loading', false)
+                    
                 }
                 
             }).catch((err)=>{
                 bus.$emit('error',{
-                    color: 'red',
-                    message: 'There was an error connecting to our servers'
+                    color: 'orange',
+                    message: err.message || 'There was an error connecting to our servers'
                 })
                 console.log(err)
                 bus.$emit('loading', false)
                 
+            })
+        },
+
+        loadTrip({commit}, payload){
+            axios.get(config.host+'/trip/'+payload).then(doc=>{
+                commit('setTempTrip', doc.data)
+            }).catch(err=>{
+                console.log(err)
             })
         }
     }

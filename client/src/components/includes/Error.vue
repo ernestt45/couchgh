@@ -21,7 +21,7 @@ import {bus} from '../../main'
                     }
                     this.err = data
                 }else{
-                    this.err = {}
+                    this.err = ''
                 }
             })
         }

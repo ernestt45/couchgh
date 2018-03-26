@@ -25,7 +25,13 @@ var getTrips = (req, res)=>{
         }
         
         Trips.find({ from: body.from, to: body.to, date: body.date}).sort({ seatsAvailable: -1 }).exec((err, doc)=>{
-            res.json(doc)
+            if(doc[0])res.json(doc)
+            else {
+                res.json({
+                    error: 'No Trips',
+                    message: 'No trips where found on this day'
+                })
+            }
         })
     }
 }

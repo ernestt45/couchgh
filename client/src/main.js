@@ -26,6 +26,10 @@ Vue.use(VueGoogleMaps, {
 Vue.use(Vuex)
 Vue.use(resource)
 
+Vue.filter('uppercase', function(value){
+  return value.toUpperCase()
+})
+
 Vue.config.productionTip = false
 
 export var bus = new Vue()
@@ -46,5 +50,6 @@ export default new Vue({
         token: localStorage.getItem('token')        
       })
     }
+    
   }
 })

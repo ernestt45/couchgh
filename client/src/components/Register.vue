@@ -96,6 +96,7 @@ export default {
     },
     isUsername(e){
         bus.$emit('error',{})
+        bus.$emit('loading', true)
         this.usernameExist = false
         console.log(e)
         if (this.username) {
@@ -108,6 +109,8 @@ export default {
                 this.usernameExist = true
                 }
                 console.log('done checking')
+                bus.$emit('loading', false)
+                
             })
         }
     },

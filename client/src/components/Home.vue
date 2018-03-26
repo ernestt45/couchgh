@@ -1,8 +1,8 @@
 -<template>
     <div>
         <navbar></navbar>
-        <loader></loader>
         <error></error>
+        <loader></loader>
         <div class="container">
             <div class="center">
                 <div class="card">
